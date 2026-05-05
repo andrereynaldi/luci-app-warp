@@ -146,13 +146,14 @@ start_service() {
 	[ "$HTTP_ENABLED" = "1" ] && \
 		procd_append_param command --http-addr "0.0.0.0:$HTTP_PORT"
 
-	if [ -n "$ENDPOINT" ]; then
-		procd_append_param command -e "$ENDPOINT"
-	else
-		DEFAULT_ENDPOINT="162.159.193.1:2408"
-		procd_append_param command -e "$DEFAULT_ENDPOINT"
-		warp_log "Using default endpoint $DEFAULT_ENDPOINT"
+	# 检查端点是否合法（WireGuard 内核要求必须是 IP）
+	# 如果端点包含域名（例如旧版的 masque.cloudflareclient.com），则强制使用默认 IP
+	DEFAULT_IP="162.159.193.1:2408"
+	if [ -z "$ENDPOINT" ] || echo "$ENDPOINT" | grep -q "[a-zA-Z]"; then
+		[ -n "$ENDPOINT" ] && warp_log "Endpoint '$ENDPOINT' is invalid (domain not supported), falling back to $DEFAULT_IP"
+		ENDPOINT="$DEFAULT_IP"
 	fi
+	procd_append_param command -e "$ENDPOINT"
 
 	procd_set_param respawn
 	procd_set_param stdout 1
