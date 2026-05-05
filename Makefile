@@ -4,7 +4,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-warp
-PKG_VERSION:=1.4.1
+PKG_VERSION:=1.4.2
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=hxzlplp7
@@ -86,11 +86,11 @@ define Package/$(PKG_NAME)/postinst
 exit 0
 endef
 
-define Package/$(PKG_NAME)/prerm
+define Package/$(PKG_NAME)/postrm
 #!/bin/sh
 [ -n "$${IPKG_INSTROOT}" ] || {
-	/etc/init.d/warp stop 2>/dev/null
-	/etc/init.d/warp disable 2>/dev/null
+	rm -rf /tmp/luci-indexcache /tmp/luci-modulecache
+	(/etc/init.d/rpcd restart >/dev/null 2>&1; /etc/init.d/uhttpd restart >/dev/null 2>&1) &
 }
 exit 0
 endef
