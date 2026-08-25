@@ -15,7 +15,7 @@
 		}
 	},
 	"admin/services/warp/status": {
-		"title": "状态",
+		"title": "Status",
 		"order": 10,
 		"action": {
 			"type": "view",
@@ -23,7 +23,7 @@
 		}
 	},
 	"admin/services/warp/settings": {
-		"title": "设置",
+		"title": "Setup",
 		"order": 20,
 		"action": {
 			"type": "view",
@@ -31,7 +31,7 @@
 		}
 	},
 	"admin/services/warp/log": {
-		"title": "日志",
+		"title": "Log",
 		"order": 30,
 		"action": {
 			"type": "view",
