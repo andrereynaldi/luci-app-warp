@@ -60,7 +60,7 @@ return view.extend({
         var socksRunning = netstatOutput.indexOf(':' + socksPort) !== -1;
         var httpRunning = netstatOutput.indexOf(':' + httpPort) !== -1;
 
-        // 更新状态显示
+        // Update status display
         var statusEl = document.getElementById('warp-status');
         var accountEl = document.getElementById('warp-account');
         var socksEl = document.getElementById('warp-socks');
@@ -68,33 +68,33 @@ return view.extend({
 
         if (statusEl) {
             statusEl.innerHTML = isRunning
-                ? '<span class="badge success">运行中</span>'
-                : '<span class="badge error">已停止</span>';
+                ? '<span class="badge success">Running</span>'
+                : '<span class="badge error">Stopped</span>';
         }
 
         if (accountEl) {
             accountEl.innerHTML = accountExists
-                ? '<span class="badge success">已注册</span>'
-                : '<span class="badge warning">未注册</span>';
+                ? '<span class="badge success">Registered</span>'
+                : '<span class="badge warning">Unregistered</span>';
         }
 
         if (socksEl) {
             socksEl.innerHTML = socksRunning
-                ? '<span class="badge success">运行中 (端口 ' + socksPort + ')</span>'
-                : '<span class="badge warning">未启动</span>';
+                ? '<span class="badge success">Running (Port' + socksPort + ')</span>'
+                : '<span class="badge warning">Not started</span>';
         }
         
         if (httpEl) {
             httpEl.innerHTML = httpRunning
-                ? '<span class="badge success">运行中 (端口 ' + httpPort + ')</span>'
-                : '<span class="badge warning">未启动</span>';
+                ? '<span class="badge success">Running (Port' + httpPort + ')</span>'
+                : '<span class="badge warning">Not started</span>';
         }
     },
 
     handleAction: function (action) {
         var self = this;
-        ui.showModal(_('请稍候...'), [
-            E('p', { 'class': 'spinning' }, _('正在执行操作...'))
+        ui.showModal(_('Please wait...'), [
+            E('p', { 'class': 'spinning' }, _('Performing operation...'))
         ]);
 
         var command = '/usr/bin/warp-manager';
@@ -127,13 +127,13 @@ return view.extend({
             ui.hideModal();
 
             if (res.code) {
-                ui.showModal(_('操作失败'), [
-                    E('pre', { 'style': 'white-space: pre-wrap;' }, res.stderr || res.stdout || _('命令执行失败')),
+                ui.showModal(_('Operation failed'), [
+                    E('pre', { 'style': 'white-space: pre-wrap;' }, res.stderr || res.stdout || _('Command execution failed.')),
                     E('div', { 'class': 'right' }, [
                         E('button', {
                             'class': 'btn',
                             'click': ui.hideModal
-                        }, _('关闭'))
+                        }, _('Closed'))
                     ])
                 ]);
                 return;
@@ -145,38 +145,38 @@ return view.extend({
                 var ip = output.match(/(?:ip=|IP:\s*)([^\n]+)/i);
                 var loc = output.match(/(?:loc=|Location:\s*)([^\n]+)/i);
 
-                ui.showModal(_('连接测试结果'), [
+                ui.showModal(_('Connection test results'), [
                     E('div', { 'class': 'cbi-section' }, [
                         E('p', {}, [
-                            E('strong', {}, 'WARP 状态: '),
-                            warpStatus ? warpStatus[1] : _('未知')
+                            E('strong', {}, 'WARP Status: '),
+                            warpStatus ? warpStatus[1] : _('unknown')
                         ]),
                         E('p', {}, [
-                            E('strong', {}, '出口 IP: '),
-                            ip ? ip[1] : _('未知')
+                            E('strong', {}, 'Egress IP: '),
+                            ip ? ip[1] : _('Unknown')
                         ]),
                         E('p', {}, [
-                            E('strong', {}, '位置: '),
-                            loc ? loc[1] : _('未知')
+                            E('strong', {}, 'Location: '),
+                            loc ? loc[1] : _('Unknown')
                         ])
                     ]),
                     E('div', { 'class': 'right' }, [
                         E('button', {
                             'class': 'btn',
                             'click': ui.hideModal
-                        }, _('关闭'))
+                        }, _('Closed'))
                     ])
                 ]);
             } else {
                 ui.addNotification(null, E('pre', { 'style': 'white-space: pre-wrap;' },
-                    res.stdout || _('操作完成')), 'success');
+                    res.stdout || _('Operation completed')), 'success');
                 return uci.load('warp').then(function() {
                     return self.pollStatus();
                 });
             }
         }).catch(function (e) {
             ui.hideModal();
-            ui.addNotification(null, E('p', _('操作失败: ') + e.message), 'error');
+            ui.addNotification(null, E('p', _('Operation failed: ') + e.message), 'error');
         });
     },
 
@@ -218,27 +218,27 @@ return view.extend({
 
             E('div', { 'class': 'warp-header' }, [
                 E('h2', {}, 'Cloudflare WARP'),
-                E('p', {}, _('加密您的网络流量，提供更快、更安全的互联网访问'))
+                E('p', {}, _('Encrypt your network traffic to provide faster, more secure internet access.'))
             ]),
 
             E('div', { 'class': 'status-grid' }, [
                 E('div', { 'class': 'status-card' }, [
-                    E('h4', {}, '🔌 ' + _('连接状态')),
+                    E('h4', {}, '🔌 ' + _('Connection status')),
                     E('div', { 'class': 'status-row' }, [
-                        E('span', {}, _('服务状态')),
+                        E('span', {}, _('Service Status')),
                         E('span', { 'id': 'warp-status' },
-                            isRunning ? E('span', { 'class': 'badge success' }, _('运行中'))
-                                : E('span', { 'class': 'badge error' }, _('已停止')))
+                            isRunning ? E('span', { 'class': 'badge success' }, _('Running'))
+                                : E('span', { 'class': 'badge error' }, _('Stopped')))
                     ])
                 ]),
 
                 E('div', { 'class': 'status-card' }, [
-                    E('h4', {}, '🌐 ' + _('账户信息')),
+                    E('h4', {}, '🌐 ' + _('Account Information')),
                     E('div', { 'class': 'status-row' }, [
-                        E('span', {}, _('注册状态')),
+                        E('span', {}, _('Registration Status')),
                         E('span', { 'id': 'warp-account' },
-                            accountExists ? E('span', { 'class': 'badge success' }, _('已注册'))
-                                : E('span', { 'class': 'badge warning' }, _('未注册')))
+                            accountExists ? E('span', { 'class': 'badge success' }, _('Registered'))
+                                : E('span', { 'class': 'badge warning' }, _('Unregistered')))
                     ]),
                     E('div', { 'class': 'status-row' }, [
                         E('span', {}, 'IPv4'),
@@ -251,49 +251,49 @@ return view.extend({
                 ]),
 
                 E('div', { 'class': 'status-card' }, [
-                    E('h4', {}, '🧦 ' + _('代理端口')),
+                    E('h4', {}, '🧦 ' + _('Proxy port')),
                     E('div', { 'class': 'status-row' }, [
                         E('span', {}, 'SOCKS5'),
                         E('span', { 'id': 'warp-socks' },
-                            socksRunning ? E('span', { 'class': 'badge success' }, _('运行中 (端口 ') + socksPort + ')')
-                                : E('span', { 'class': 'badge warning' }, _('未启动')))
+                            socksRunning ? E('span', { 'class': 'badge success' }, _('Running (Port ') + socksPort + ')')
+                                : E('span', { 'class': 'badge warning' }, _('Not started')))
                     ]),
                     E('div', { 'class': 'status-row' }, [
                         E('span', {}, 'HTTP'),
                         E('span', { 'id': 'warp-http' },
-                            httpRunning ? E('span', { 'class': 'badge success' }, _('运行中 (端口 ') + httpPort + ')')
-                                : E('span', { 'class': 'badge warning' }, _('未启动')))
+                            httpRunning ? E('span', { 'class': 'badge success' }, _('Running (Port ') + httpPort + ')')
+                                : E('span', { 'class': 'badge warning' }, _('Not started')))
                     ])
                 ])
             ]),
 
             E('div', { 'class': 'cbi-section' }, [
-                E('h3', {}, '⚙️ ' + _('操作')),
+                E('h3', {}, '⚙️ ' + _('operation')),
                 E('div', { 'class': 'action-buttons' }, [
                     E('button', {
                         'class': 'btn cbi-button cbi-button-action',
                         'click': L.bind(this.handleAction, this, 'register')
-                    }, '📝 ' + _('注册账户')),
+                    }, '📝 ' + _('Register an account')),
                     E('button', {
                         'class': 'btn cbi-button cbi-button-apply',
                         'click': L.bind(this.handleAction, this, 'start')
-                    }, '▶️ ' + _('启动')),
+                    }, '▶️ ' + _('Start')),
                     E('button', {
                         'class': 'btn cbi-button cbi-button-remove',
                         'click': L.bind(this.handleAction, this, 'stop')
-                    }, '⏹️ ' + _('停止')),
+                    }, '⏹️ ' + _('Stop')),
                     E('button', {
                         'class': 'btn cbi-button cbi-button-action',
                         'click': L.bind(this.handleAction, this, 'restart')
-                    }, '🔄 ' + _('重启')),
+                    }, '🔄 ' + _('Restart')),
                     E('button', {
                         'class': 'btn cbi-button cbi-button-neutral',
                         'click': L.bind(this.handleAction, this, 'test')
-                    }, '🧪 ' + _('测试连接')),
+                    }, '🧪 ' + _('Test connection')),
                     E('button', {
                         'class': 'btn cbi-button cbi-button-remove',
                         'click': L.bind(this.handleAction, this, 'reset')
-                    }, '🗑️ ' + _('重置账户'))
+                    }, '🗑️ ' + _('Reset account'))
                 ])
             ])
         ]);

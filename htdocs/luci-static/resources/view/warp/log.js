@@ -48,14 +48,14 @@ return view.extend({
         poll.start();
 
         return E('div', { 'class': 'cbi-map' }, [
-            E('h2', {}, _('WARP 日志')),
+            E('h2', {}, _('WARP Log')),
             E('div', { 'class': 'cbi-section' }, [
                 E('div', { 'style': 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;' }, [
-                    E('span', {}, _('WARP 服务运行日志')),
+                    E('span', {}, _('WARP Service Execution Logs')),
                     E('div', { 'style': 'display: flex; gap: 15px; align-items: center;' }, [
                         E('label', { 'style': 'display: flex; align-items: center; gap: 5px;' }, [
                             autoRefreshCheckbox,
-                            _('自动刷新')
+                            _('Auto-refresh')
                         ]),
                         E('button', {
                             'class': 'btn cbi-button cbi-button-action',
@@ -68,7 +68,7 @@ return view.extend({
                                     }
                                 });
                             }
-                        }, _('刷新日志')),
+                        }, _('Refresh log')),
                         E('button', {
                             'class': 'btn cbi-button cbi-button-neutral',
                             'click': function() {
@@ -77,7 +77,7 @@ return view.extend({
                                     textarea.value = _('Log display cleared');
                                 }
                             }
-                        }, _('清空显示'))
+                        }, _('Clear Log'))
                     ])
                 ]),
                 logTextarea
